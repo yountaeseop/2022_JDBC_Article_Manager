@@ -22,4 +22,9 @@ SELECT * FROM article;
 
 #select rand()
 
+SELECT * 
+FROM article
+ORDER BY id DESC;
+
+
 
