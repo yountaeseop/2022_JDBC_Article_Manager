@@ -22,6 +22,11 @@ public class Article extends Object {
 		this.body = body;
 	}
 
+	
+
+
+
+
 	@Override
 	public String toString() {
 		return "Article [id=" + id + ", title=" + title + ", body=" + body + "]";

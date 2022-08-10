@@ -38,7 +38,7 @@ public class Main {
 					Class.forName("com.mysql.jdbc.Driver");
 					String url = "jdbc:mysql://127.0.0.1:3306/article_manager?useUnicode=true&characterEncoding=utf8&autoReconnect=true&serverTimezone=Asia/Seoul&useOldAliasMetadataBehavior=true&zeroDateTimeNehavior=convertToNull";
 
-					conn = DriverManager.getConnection(url, "root", "5420");
+					conn = DriverManager.getConnection(url, "root", "");
 					System.out.println("연결 성공!");
 					
 					String sql = "INSERT INTO article";
