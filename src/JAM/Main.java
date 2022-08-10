@@ -154,7 +154,62 @@ public class Main {
 					System.out.printf("%d  /  %s\n", article.id, article.title);
 				}
 				
-			} else if (cmd.equals("exit")) {
+			} else if (cmd.startsWith("article modify ")) {
+				int id = Integer.parseInt(cmd.split(" ")[2]);
+				
+				System.out.printf("== %d번 게시물 수정 ==\n", id);
+				System.out.printf("새 제목 : ");
+				String title = sc.nextLine();
+				System.out.printf("새 내용 : ");
+				String body = sc.nextLine();
+				
+				Connection conn = null;
+				PreparedStatement pstmt = null;
+				
+				try {
+					Class.forName("com.mysql.jdbc.Driver");
+					String url = "jdbc:mysql://127.0.0.1:3306/article_manager?useUnicode=true&characterEncoding=utf8&autoReconnect=true&serverTimezone=Asia/Seoul&useOldAliasMetadataBehavior=true&zeroDateTimeNehavior=convertToNull";
+
+					conn = DriverManager.getConnection(url, "root", "5420");
+					System.out.println("연결 성공!");
+					
+					String sql = "UPDATE article";
+					sql	+= " SET updateDate = NOW()";
+					sql	+= ", title = '" + title + "'";
+					sql	+= ", `body` = '" + body + "'";
+					sql	+= " WHERE id = "+ id;
+					
+					System.out.println(sql);
+					
+					pstmt = conn.prepareStatement(sql);
+					
+					int affectedRows = pstmt.executeUpdate();
+					
+					System.out.println("affectedRows : " + affectedRows);
+					
+				} catch (ClassNotFoundException e) {
+					System.out.println("드라이버 로딩 실패");
+				} catch (SQLException e) {
+					System.out.println("에러: " + e);
+				} finally {
+					try {
+						if (conn != null && !conn.isClosed()) {
+							conn.close();
+						}
+					} catch (SQLException e) {
+						e.printStackTrace();
+					}
+					try {
+						if (pstmt != null && !pstmt.isClosed()) {
+							pstmt.close();
+						}
+					} catch (SQLException e) {
+						e.printStackTrace();
+					}
+				}
+				System.out.printf("%d번 게시물이 수정 되었습니다\n",id);
+			}
+				else if (cmd.equals("exit")) {
 				System.out.println("프로그램을 종료합니다");
 				break;
 			}
