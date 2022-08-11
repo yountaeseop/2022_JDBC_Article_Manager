@@ -12,10 +12,7 @@ import JAM.Article;
 
 public class JDBCSelectTEST {
 	public static void main(String[] args) {
-<<<<<<< HEAD
-		
-=======
->>>>>>> 9204384fbaee9d48d7b59f19705de557d0a25b40
+
 		Connection conn = null;
 		PreparedStatement pstmt = null;
 		ResultSet rs = null;
@@ -26,11 +23,9 @@ public class JDBCSelectTEST {
 			Class.forName("com.mysql.jdbc.Driver");
 			String url = "jdbc:mysql://127.0.0.1:3306/article_manager?useUnicode=true&characterEncoding=utf8&autoReconnect=true&serverTimezone=Asia/Seoul&useOldAliasMetadataBehavior=true&zeroDateTimeNehavior=convertToNull";
 
-<<<<<<< HEAD
+
 			conn = DriverManager.getConnection(url, "root", "5420");
-=======
-			conn = DriverManager.getConnection(url, "root", "");
->>>>>>> 9204384fbaee9d48d7b59f19705de557d0a25b40
+
 			System.out.println("연결 성공!");
 
 			String sql = "SELECT *";
