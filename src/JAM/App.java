@@ -2,12 +2,14 @@ package JAM;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Scanner;
+
+import JAM.util.DBUtil;
+import JAM.util.SecSql;
 
 public class App {
 
@@ -18,21 +20,23 @@ public class App {
 			System.out.printf("명령어) ");
 			String cmd = sc.nextLine().trim();
 			
-			//DB 연결
+			//DB 연결을 위한 Connection 객체 생성
 			Connection conn = null;
 			
 			try {
+				//1. 드라이버 클래스 로드
 				Class.forName("com.mysql.jdbc.Driver");
 				
 			} catch (ClassNotFoundException e) {
 				System.out.println("예외 : MySql 드라이버 클래스가 없습니다.");
 				System.out.println("프로그램을 종료합니다.");
 				break;
-			} 
+			}
 			
 			String url = "jdbc:mysql://127.0.0.1:3306/article_manager?useUnicode=true&characterEncoding=utf8&autoReconnect=true&serverTimezone=Asia/Seoul&useOldAliasMetadataBehavior=true&zeroDateTimeNehavior=convertToNull";
 			
 			try {
+				//2. DB연결을 위한 Connection 객체 생성
 				conn = DriverManager.getConnection(url, "root", "5420");
 				
 				int actionResult = doAction(conn, sc, cmd);
@@ -48,6 +52,7 @@ public class App {
 			} finally {
 				try {
 					if (conn != null && !conn.isClosed()) {
+						//5. 리소스 정리
 						conn.close();
 					}
 				} catch (SQLException e) {
@@ -60,44 +65,54 @@ public class App {
 	
 	private int doAction(Connection conn, Scanner sc, String cmd) {
 		
-		int lastArticleId = 0;
-		
 		if (cmd.equals("article write")) {
 			System.out.println("== 게시물 작성 ==");
-			int id = lastArticleId + 1;
 			System.out.printf("제목 : ");
 			String title = sc.nextLine();
 			System.out.printf("내용 : ");
 			String body = sc.nextLine();
 			
-			PreparedStatement pstmt = null;
+			SecSql sql = new SecSql();
 			
-			try {
-				String sql = "INSERT INTO article";
-				sql	+= " SET regDate = NOW()";
-				sql	+= ", updateDate = NOW()";
-				sql	+= ", title = '"+ title +"'";
-				sql	+= ", `body` = '"+ body +"'";
-				
-				System.out.println(sql);
-				
-				pstmt = conn.prepareStatement(sql);
-				
-				pstmt.executeUpdate();
-				
-			}  catch (SQLException e) {
-				System.out.println("@@@@에러@@@@: " + e);
-			} finally {
-				try {
-					if (pstmt != null && !pstmt.isClosed()) {
-						pstmt.close();
-					}
-				} catch (SQLException e) {
-					e.printStackTrace();
-				}
-			}
+			sql.append("INSERT INTO article");
+			sql.append(" SET regDate = NOW()");
+			sql.append(", updateDate = NOW()");
+			sql.append(", title = ?", title);
+			sql.append(", `body` = ?", body);
 			
-			lastArticleId++;
+			int id = DBUtil.insert(conn, sql);
+			
+			System.out.printf("%d번 게시물이 생성되었습니다.\n", id);
+			
+//			PreparedStatement pstmt = null;
+//			
+//			try {
+//				String sql = "INSERT INTO article";
+//				sql	+= " SET regDate = NOW()";
+//				sql	+= ", updateDate = NOW()";
+//				sql	+= ", title = '"+ title +"'";
+//				sql	+= ", `body` = '"+ body +"'";
+//				
+//				System.out.println(sql);
+//				
+//				// 3. SQL을 담는 PreparedStatement 객체 생성
+//				pstmt = conn.prepareStatement(sql);
+//				
+//				// 4. SQL 실행
+//				pstmt.executeUpdate();
+//				
+//			}  catch (SQLException e) {
+//				System.out.println("@@@@에러@@@@: " + e);
+//			} finally {
+//				try {
+//					if (pstmt != null && !pstmt.isClosed()) {
+//						//5. 리소스 정리
+//						pstmt.close();
+//					}
+//				} catch (SQLException e) {
+//					e.printStackTrace();
+//				}
+//			}
 			
 		}  else if (cmd.startsWith("article modify ")) {
 			int id = Integer.parseInt(cmd.split(" ")[2]);
@@ -108,82 +123,108 @@ public class App {
 			System.out.printf("새 내용 : ");
 			String body = sc.nextLine();
 			
-			PreparedStatement pstmt = null;
+			SecSql sql = new SecSql();
 			
-			try {
-				String sql = "UPDATE article";
-				sql	+= " SET updateDate = NOW()";
-				sql	+= ", title = '" + title + "'";
-				sql	+= ", `body` = '" + body + "'";
-				sql	+= " WHERE id = "+ id;
-				
-				System.out.println(sql);
-				
-				pstmt = conn.prepareStatement(sql);
-				
-				pstmt.executeUpdate();
-				
-			}  catch (SQLException e) {
-				System.out.println("@@@@에러@@@@: " + e);
-			} finally {
-				try {
-					if (pstmt != null && !pstmt.isClosed()) {
-						pstmt.close();
-					}
-				} catch (SQLException e) {
-					e.printStackTrace();
-				}
-			}
-			System.out.printf("%d번 게시물이 수정 되었습니다\n",id);
+			sql.append("UPDATE article");
+			sql.append(" SET updateDate = NOW()");
+			sql.append(", title = ?", title);
+			sql.append(", `body` = ?", body);
+			sql.append(" WHERE id = ?", id);
+			
+			id = DBUtil.update(conn, sql);
+			
+			System.out.printf("%d번 게시물이 수정되었습니다.\n", id);
+			
+//			PreparedStatement pstmt = null;
+//			
+//			try {
+//				String sql = "UPDATE article";
+//				sql	+= " SET updateDate = NOW()";
+//				sql	+= ", title = '" + title + "'";
+//				sql	+= ", `body` = '" + body + "'";
+//				sql	+= " WHERE id = "+ id;
+//				
+//				System.out.println(sql);
+//				
+//				pstmt = conn.prepareStatement(sql);
+//				
+//				pstmt.executeUpdate();
+//				
+//			}  catch (SQLException e) {
+//				System.out.println("@@@@에러@@@@: " + e);
+//			} finally {
+//				try {
+//					if (pstmt != null && !pstmt.isClosed()) {
+//						pstmt.close();
+//					}
+//				} catch (SQLException e) {
+//					e.printStackTrace();
+//				}
+//			}
+//			System.out.printf("%d번 게시물이 수정 되었습니다\n",id);
 		}
 		else if (cmd.equals("article list")) {
 			System.out.println("== 게시물 리스트 ==");
-			PreparedStatement pstmt = null;
-			ResultSet rs = null;
 
 			List<Article> articles = new ArrayList<>();
 
-			try {
-				
-				String sql = "SELECT *";
-				sql += " FROM article";
-				sql += " ORDER BY id DESC";
-
-				System.out.println(sql);
-
-				pstmt = conn.prepareStatement(sql);
-				rs = pstmt.executeQuery();
-
-				while (rs.next()) {
-					int id = rs.getInt("id");
-					String regDate = rs.getString("regDate");
-					String updateDate = rs.getString("updateDate");
-					String title = rs.getString("title");
-					String body = rs.getString("body");
-
-					Article article = new Article(id, regDate, updateDate, title, body);
-					articles.add(article);
-				}
-
-			}  catch (SQLException e) {
-				System.out.println("에러: " + e);
-			} finally {
-				try {
-					if (rs != null && !rs.isClosed()) {
-						rs.close();
-					}
-				} catch (SQLException e) {
-					e.printStackTrace();
-				}
-				try {
-					if (pstmt != null && !pstmt.isClosed()) {
-						pstmt.close();
-					}
-				} catch (SQLException e) {
-					e.printStackTrace();
-				}
-				
+			SecSql sql = new SecSql();
+			
+			sql.append("SELECT *");
+			sql.append("FROM article");
+			sql.append("ORDER BY id DESC");
+			
+			List<Map<String,Object>> articlesListMap = DBUtil.selectRows(conn, sql);
+			
+			for (Map<String, Object> articleMap : articlesListMap) {
+				articles.add(new Article(articleMap));
 			}
+			
+			
+			
+			
+//			try {
+//				
+//				String sql = "SELECT *";
+//				sql += " FROM article";
+//				sql += " ORDER BY id DESC";
+//
+//				System.out.println(sql);
+//
+//				pstmt = conn.prepareStatement(sql);
+//				rs = pstmt.executeQuery();
+//
+//				while (rs.next()) {
+//					int id = rs.getInt("id");
+//					String regDate = rs.getString("regDate");
+//					String updateDate = rs.getString("updateDate");
+//					String title = rs.getString("title");
+//					String body = rs.getString("body");
+//
+//					Article article = new Article(id, regDate, updateDate, title, body);
+//					articles.add(article);
+//				}
+//
+//			}  catch (SQLException e) {
+//				System.out.println("에러: " + e);
+//			} finally {
+//				try {
+//					if (rs != null && !rs.isClosed()) {
+//						rs.close();
+//					}
+//				} catch (SQLException e) {
+//					e.printStackTrace();
+//				}
+//				try {
+//					if (pstmt != null && !pstmt.isClosed()) {
+//						pstmt.close();
+//					}
+//				} catch (SQLException e) {
+//					e.printStackTrace();
+//				}
+//				
+//			}
+			
 			if (articles.size() == 0) {
 				System.out.println("게시물이 없습니다");
 				return 0;

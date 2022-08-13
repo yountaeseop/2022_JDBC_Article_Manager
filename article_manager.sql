@@ -26,8 +26,6 @@ SELECT *
 FROM article
 ORDER BY id DESC;
 
-<<<<<<< HEAD
 
-=======
->>>>>>> 9204384fbaee9d48d7b59f19705de557d0a25b40
+
 
