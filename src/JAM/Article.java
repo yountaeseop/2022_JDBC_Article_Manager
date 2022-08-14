@@ -10,6 +10,14 @@ public class Article extends Object {
 	public LocalDateTime updateDate;
 	public String title;
 	public String body;
+	
+	public Article(int id, LocalDateTime regDate, LocalDateTime updateDate, String title, String body) {
+		this.id = id;
+		this.regDate = regDate;
+		this.updateDate = updateDate;
+		this.title = title;
+		this.body = body;
+	}
 
 	public Article(Map<String, Object> articleMap) {
 		this.id = (int)articleMap.get("id");
@@ -17,6 +25,10 @@ public class Article extends Object {
 		this.updateDate = (LocalDateTime)articleMap.get("updateDate");
 		this.title = (String)articleMap.get("title");
 		this.body = (String)articleMap.get("body");
+	}
+
+	public Article(int id2, String regDate2, String updateDate2, String title2, String body2) {
+		// TODO Auto-generated constructor stub
 	}
 
 	@Override

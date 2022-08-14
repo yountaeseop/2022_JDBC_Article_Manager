@@ -66,7 +66,84 @@ public class App {
 	
 	private int doAction(Connection conn, Scanner sc, String cmd) {
 		
-		if (cmd.equals("article write")) {
+		if (cmd.equals("member join")) {
+			String loginId = null;
+			String loginPw = null;
+			String loginPwConfirm = null;
+			String name = null;
+
+			System.out.println("== 회원가입 ==");
+			
+			// id 입력
+			while (true) {
+				System.out.printf("아이디 : ");
+				loginId = sc.nextLine().trim();
+				if (loginId.length() == 0) {
+					System.out.println("아이디를 입력해주세요");
+					continue;
+				}
+				break;
+			}
+			
+			// Pw,PwConfirm 입력
+			while (true) {
+				System.out.printf("비밀번호 : ");
+				loginPw = sc.nextLine().trim();
+
+				if (loginPw.length() == 0) {
+					System.out.println("비밀번호를 입력해주세요");
+					continue;
+				}
+
+				boolean loginPwCheck = true;
+
+				while (true) {
+					System.out.printf("비밀번호 확인 : ");
+					loginPwConfirm = sc.nextLine().trim();
+
+					if (loginPwConfirm.length() == 0) {
+						System.out.println("비밀번호 확인을 입력해주세요");
+						continue;
+					}
+
+					if (loginPw.equals(loginPwConfirm) == false) {
+						System.out.println("비밀번호가 일치하지 않습니다. 다시 입력해주세요");
+						loginPwCheck = false;
+						break;
+					}
+					break;
+				}
+				if (loginPwCheck) {
+					break;
+				}
+			}
+
+			while (true) {
+				System.out.printf("이름 : ");
+				name = sc.nextLine().trim();
+
+				if (name.length() == 0) {
+					System.out.println("이름을 입력해주세요");
+					continue;
+				}
+				break;
+			}
+
+			SecSql sql = new SecSql();
+
+			sql.append("INSERT INTO `member`");
+			sql.append(" SET regDate = NOW()");
+			sql.append(", updateDate = NOW()");
+			sql.append(", loginId = ?", loginId);
+			sql.append(", loginPw = ?", loginPw);
+			sql.append(", name = ?", name);
+
+			int id = DBUtil.insert(conn, sql);
+
+			System.out.printf("%d번 회원님, 가입 되었습니다.\n", id);
+
+		}
+		else if (cmd.equals("article write")) {
 			System.out.println("== 게시물 작성 ==");
 			System.out.printf("제목 : ");
 			String title = sc.nextLine();
