@@ -1,14 +1,25 @@
 package JAM.controller;
 
+import java.sql.Connection;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Scanner;
 
 import JAM.Article;
+import JAM.service.ArticleService;
+import JAM.service.MemberService;
 import JAM.util.DBUtil;
 import JAM.util.SecSql;
 
 public class ArticleController extends Controller {
+	
+	private ArticleService articleService;
+	
+	public ArticleController(Connection conn, Scanner sc) {
+		super(sc);
+		articleService = new ArticleService(conn);
+	}
 	
 	public void dowrite(String cmd) {
 		System.out.println("== 게시물 작성 ==");
@@ -17,40 +28,23 @@ public class ArticleController extends Controller {
 		System.out.printf("내용 : ");
 		String body = sc.nextLine();
 		
-		SecSql sql = new SecSql();
-		
-		sql.append("INSERT INTO article");
-		sql.append(" SET regDate = NOW()");
-		sql.append(", updateDate = NOW()");
-		sql.append(", title = ?", title);
-		sql.append(", `body` = ?", body);
-
-		int id = DBUtil.insert(conn, sql);
+		int id = articleService.doWrite(title,body);
 		
 		System.out.printf("%d번 게시물이 생성되었습니다.\n", id);
 	}
 	public void doDelete(String cmd) {
 		int id = Integer.parseInt(cmd.split(" ")[2]);
 		
-		SecSql sql = new SecSql();
-		sql.append("SELECT COUNT(*)");
-		sql.append("FROM article");
-		sql.append("WHERE id = ?", id);
+		boolean isArticleExists = articleService.isArticleExists(id);
 		
-		int articlesCount = DBUtil.selectRowIntValue(conn, sql);
-		
-		if(articlesCount == 0) {
+		if(isArticleExists == false) {
 			System.out.printf("%d번 게시글은 존재하지 않습니다.\n", id);
 			return;
 		}
 		
 		System.out.printf("== %d번 게시물 삭제 ==\n", id);
 		
-		sql = new SecSql();
-		sql.append("DELETE FROM article");
-		sql.append("WHERE id = ?", id);
-		
-		DBUtil.delete(conn, sql);
+		articleService.doDelete(id);
 		
 		System.out.printf("%d번 게시물이 삭제되었습니다.\n", id);
 		
