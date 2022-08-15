@@ -1,6 +1,8 @@
 package JAM.dao;
 
 import java.sql.Connection;
+import java.util.List;
+import java.util.Map;
 
 import JAM.util.DBUtil;
 import JAM.util.SecSql;
@@ -42,5 +44,38 @@ public class ArticleDao {
 		sql.append("WHERE id = ?", id);
 		
 		DBUtil.delete(conn, sql);
+	}
+
+	public Map<String, Object> showDetail(int id) {
+		SecSql sql = new SecSql();
+		sql.append("SELECT *");
+		sql.append("FROM article");
+		sql.append("WHERE id = ?", id);
+		
+		return DBUtil.selectRow(conn, sql);
+		
+	}
+
+	public void doModify(int id, String title, String body) {
+		SecSql sql = new SecSql();
+		
+		sql.append("UPDATE article");
+		sql.append(" SET updateDate = NOW()");
+		sql.append(", title = ?", title);
+		sql.append(", `body` = ?", body);
+		sql.append(" WHERE id = ?", id);
+		
+		DBUtil.update(conn, sql);
+		
+	}
+
+	public List<Map<String, Object>> showList() {
+		SecSql sql = new SecSql();
+		
+		sql.append("SELECT *");
+		sql.append("FROM article");
+		sql.append("ORDER BY id DESC");
+		
+		return DBUtil.selectRows(conn, sql);
 	}
 }

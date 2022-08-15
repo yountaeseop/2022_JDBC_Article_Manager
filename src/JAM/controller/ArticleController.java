@@ -52,12 +52,7 @@ public class ArticleController extends Controller {
 	public void showDetail(String cmd) {
 		int id = Integer.parseInt(cmd.split(" ")[2]);
 		
-		SecSql sql = new SecSql();
-		sql.append("SELECT *");
-		sql.append("FROM article");
-		sql.append("WHERE id = ?", id);
-		
-		Map<String, Object> articleMap = DBUtil.selectRow(conn, sql);
+		Map<String, Object> articleMap = articleService.showDetail(id); 
 		
 		if(articleMap.isEmpty()) {
 			System.out.printf("%d번 게시글은 존재하지 않습니다.\n", id);
@@ -84,15 +79,7 @@ public class ArticleController extends Controller {
 		System.out.printf("새 내용 : ");
 		String body = sc.nextLine();
 		
-		SecSql sql = new SecSql();
-		
-		sql.append("UPDATE article");
-		sql.append(" SET updateDate = NOW()");
-		sql.append(", title = ?", title);
-		sql.append(", `body` = ?", body);
-		sql.append(" WHERE id = ?", id);
-		
-		DBUtil.update(conn, sql);
+		articleService.doModify(id, title, body);
 		
 		System.out.printf("%d번 게시물이 수정되었습니다.\n", id);
 		
@@ -101,14 +88,8 @@ public class ArticleController extends Controller {
 		System.out.println("== 게시물 리스트 ==");
 
 		List<Article> articles = new ArrayList<>();
-
-		SecSql sql = new SecSql();
 		
-		sql.append("SELECT *");
-		sql.append("FROM article");
-		sql.append("ORDER BY id DESC");
-		
-		List<Map<String,Object>> articlesListMap = DBUtil.selectRows(conn, sql);
+		List<Map<String,Object>> articlesListMap = articleService.showList();
 		
 		for (Map<String, Object> articleMap : articlesListMap) {
 			articles.add(new Article(articleMap));
