@@ -1,9 +1,11 @@
 package JAM.dao;
 
 import java.sql.Connection;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import JAM.Article;
 import JAM.util.DBUtil;
 import JAM.util.SecSql;
 
@@ -65,7 +67,7 @@ public class ArticleDao {
 		sql.append(", `body` = ?", body);
 		sql.append(" WHERE id = ?", id);
 		
-		DBUtil.update(conn, sql);
+		DBUtil.update(conn, sql);;
 		
 	}
 
@@ -77,5 +79,39 @@ public class ArticleDao {
 		sql.append("ORDER BY id DESC");
 		
 		return DBUtil.selectRows(conn, sql);
+	}
+
+	public Article getArticleById(int id) {
+		SecSql sql = new SecSql();
+		sql.append("SELECT *");
+		sql.append("FROM article");
+		sql.append("WHERE id = ?", id);
+
+		Map<String, Object> articleMap = DBUtil.selectRow(conn, sql);
+
+		if (articleMap.isEmpty()) {
+			return null;
+		}
+
+		return new Article(articleMap);
+		
+	}
+
+	public List<Article> getArticles() {
+		SecSql sql = new SecSql();
+		
+		sql.append("SELECT *");
+		sql.append("FROM article");
+		sql.append("ORDER BY id DESC");
+		
+		List<Map<String, Object>> articlesListMap = DBUtil.selectRows(conn,sql);
+		
+		List<Article> articles = new ArrayList<>();
+		
+		for(Map<String, Object> articleMap : articlesListMap) {
+			articles.add(new Article(articleMap));
+		}
+		
+		return articles;
 	}
 }

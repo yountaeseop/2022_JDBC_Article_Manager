@@ -39,7 +39,7 @@ public class App {
 			
 			try {
 				//2. DB연결을 위한 Connection 객체 생성
-				conn = DriverManager.getConnection(url, "root", "5420");
+				conn = DriverManager.getConnection(url, "root", "");
 				
 				int actionResult = action(conn, sc, cmd);
 				

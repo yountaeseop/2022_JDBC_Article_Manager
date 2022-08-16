@@ -4,6 +4,7 @@ import java.sql.Connection;
 import java.util.List;
 import java.util.Map;
 
+import JAM.Article;
 import JAM.dao.ArticleDao;
 
 public class ArticleService {
@@ -31,10 +32,18 @@ public class ArticleService {
 	}
 
 	public void doModify(int id, String title, String body) {
-		articleDao.doModify(id, title, body);
+		articleDao.doModify(id, title, body);;
 	}
 
 	public List<Map<String, Object>> showList() {
 		return articleDao.showList();
+	}
+
+	public Article getArticleById(int id) {
+		return articleDao.getArticleById(id);
+	}
+
+	public List<Article> getArticles() {
+		return articleDao.getArticles();
 	}
 }
