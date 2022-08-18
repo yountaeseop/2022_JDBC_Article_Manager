@@ -2,12 +2,13 @@ package JAM.controller;
 
 import java.util.Scanner;
 
-public class Controller {
+import JAM.container.Container;
+
+public abstract class Controller {
 	protected Scanner sc;
 	
-	public Controller(Scanner sc) {
-		this.sc = sc;
+	public Controller() {
+		this.sc = Container.sc;
 	}
-	
 	
 }

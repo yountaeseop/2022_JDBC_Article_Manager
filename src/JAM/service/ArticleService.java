@@ -5,13 +5,14 @@ import java.util.List;
 import java.util.Map;
 
 import JAM.Article;
+import JAM.container.Container;
 import JAM.dao.ArticleDao;
 
 public class ArticleService {
 	private ArticleDao articleDao;
 	
-	public ArticleService(Connection conn) {
-		articleDao = new ArticleDao(conn);
+	public ArticleService() {
+		articleDao = Container.articleDao;
 	}
 
 	public int doWrite(String title, String body) {

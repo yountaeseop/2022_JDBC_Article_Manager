@@ -3,24 +3,22 @@ package JAM;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
 import java.util.Scanner;
 
+import JAM.container.Container;
 import JAM.controller.ArticleController;
 import JAM.controller.MemberController;
-import JAM.util.DBUtil;
-import JAM.util.SecSql;
 
 public class App {
 
 	public void run() {
-		Scanner sc = new Scanner(System.in);
-
+		Container.sc = new Scanner(System.in);
+		
+		Container.init();
+		
 		while (true) {
 			System.out.printf("명령어) ");
-			String cmd = sc.nextLine().trim();
+			String cmd = Container.sc.nextLine().trim();
 			
 			//DB 연결을 위한 Connection 객체 생성
 			Connection conn = null;
@@ -41,7 +39,9 @@ public class App {
 				//2. DB연결을 위한 Connection 객체 생성
 				conn = DriverManager.getConnection(url, "root", "5420");
 				
-				int actionResult = action(conn, sc, cmd);
+				Container.conn = conn;
+				
+				int actionResult = action(cmd);
 				
 				if(actionResult == -1) {
 					break;
@@ -65,15 +65,15 @@ public class App {
 		}
 	}
 	
-	private int action(Connection conn, Scanner sc, String cmd) {
+	private int action(String cmd) {
 		
 		if (cmd.equals("exit")) {
 			System.out.println("프로그램을 종료합니다");
 			return -1;
 		}
 		
-		MemberController memberController = new MemberController(conn, sc);
-		ArticleController articleController = new ArticleController(conn, sc);
+		MemberController memberController = Container.memberController;
+		ArticleController articleController = Container.articleController;
 		
 		if (cmd.equals("member join")) {
 			memberController.doJoin(cmd);

@@ -1,24 +1,17 @@
 package JAM.controller;
 
-import java.sql.Connection;
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
-import java.util.Scanner;
 
 import JAM.Article;
+import JAM.container.Container;
 import JAM.service.ArticleService;
-import JAM.service.MemberService;
-import JAM.util.DBUtil;
-import JAM.util.SecSql;
 
 public class ArticleController extends Controller {
 	
 	private ArticleService articleService;
 	
-	public ArticleController(Connection conn, Scanner sc) {
-		super(sc);
-		articleService = new ArticleService(conn);
+	public ArticleController() {
+		articleService = Container.articleService;
 	}
 	
 	public void dowrite(String cmd) {

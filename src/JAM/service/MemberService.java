@@ -4,13 +4,14 @@ package JAM.service;
 import java.sql.Connection;
 
 import JAM.Member;
+import JAM.container.Container;
 import JAM.dao.MemberDao;
 
 public class MemberService {
 	private MemberDao memberDao;
 	
-	public MemberService(Connection conn) {
-		memberDao = new MemberDao(conn);
+	public MemberService() {
+		memberDao = Container.memberDao;
 	}
 
 	public boolean isLoginIdDup(String loginId) {
