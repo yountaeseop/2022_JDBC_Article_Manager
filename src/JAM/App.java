@@ -39,7 +39,7 @@ public class App {
 			
 			try {
 				//2. DB연결을 위한 Connection 객체 생성
-				conn = DriverManager.getConnection(url, "root", "");
+				conn = DriverManager.getConnection(url, "root", "5420");
 				
 				int actionResult = action(conn, sc, cmd);
 				
@@ -77,6 +77,8 @@ public class App {
 		
 		if (cmd.equals("member join")) {
 			memberController.doJoin(cmd);
+		}	else if (cmd.equals("member login")) {
+			memberController.doLogin(cmd);
 		}	else if (cmd.equals("article write")) {
 			articleController.dowrite(cmd);
 		}	else if (cmd.startsWith("article delete ")) {
