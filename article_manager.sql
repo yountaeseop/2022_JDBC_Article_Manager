@@ -43,6 +43,26 @@ loginPw = 'test2',
 #게시물 테이블에 memberId 칼럼 추가
 ALTER TABLE article ADD COLUMN memberId INT(10) UNSIGNED NOT NULL;
 
+
+# 임시 게시글 데이터
+INSERT INTO article
+SET regDate = NOW(),
+updateDate = NOW(),
+title = '제목1',
+`body` = '내용1',
+memberId = 1;
+
+INSERT INTO article
+SET regDate = NOW(),
+updateDate = NOW(),
+title = '제목2',
+`body` = '내용2',
+memberId = 2;
+
+SELECT * FROM article;
+SELECT * FROM `member`;
+
+/*
 INSERT INTO article
 SET regDate = NOW(),
 updateDate = NOW(),
@@ -55,12 +75,10 @@ updateDate = NOW(),
 loginId = CONCAT('TestId',RAND()),
 loginPW = CONCAT('TestPw',RAND()),
 `name` = CONCAT('TestName',RAND());
+*/
 
-SELECT * FROM article;
-SELECT * FROM `member`;
-
-select count(*) = 0
-from `member`
+SELECT COUNT(*) = 0
+FROM `member`
 WHERE loginId = 'aaa1';
 
 INSERT INTO article 
