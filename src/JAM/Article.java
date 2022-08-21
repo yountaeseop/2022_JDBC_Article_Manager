@@ -11,6 +11,7 @@ public class Article extends Object {
 	public int memberId;
 	public String title;
 	public String body;
+	public int hit;
 	
 	public String extra__writer;
 	
@@ -21,6 +22,7 @@ public class Article extends Object {
 		this.memberId = (int)articleMap.get("memberId");
 		this.title = (String)articleMap.get("title");
 		this.body = (String)articleMap.get("body");
+		this.hit = (int)articleMap.get("hit");
 		
 		if(articleMap.get("extra__writer") != null) {
 			this.extra__writer = (String)articleMap.get("extra__writer");
@@ -34,7 +36,7 @@ public class Article extends Object {
 	@Override
 	public String toString() {
 		return "Article [id=" + id + ", regDate=" + regDate + ", updateDate=" + updateDate + ", memberId=" + memberId
-				+ ", title=" + title + ", body=" + body + "]";
+				+ ", title=" + title + ", body=" + body + ", hit=" + hit + ", extra__writer=" + extra__writer + "]";
 	}
 	// 자동생성하는 방법 => 마우스 우클릭 - source 선택 - generate to String
 	

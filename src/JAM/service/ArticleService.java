@@ -7,6 +7,8 @@ import java.util.Map;
 import JAM.Article;
 import JAM.container.Container;
 import JAM.dao.ArticleDao;
+import JAM.util.DBUtil;
+import JAM.util.SecSql;
 
 public class ArticleService {
 	private ArticleDao articleDao;
@@ -16,7 +18,6 @@ public class ArticleService {
 	}
 
 	public int doWrite(int memberId, String title, String body) {
-		
 		return articleDao.doWrite(memberId, title, body);
 	}
 
@@ -48,4 +49,26 @@ public class ArticleService {
 	public List<Article> getArticles() {
 		return articleDao.getArticles();
 	}
+
+	public void increaseHit(int id) {
+		articleDao.increaseHit(id);
+		
+	}
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
