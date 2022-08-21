@@ -91,7 +91,7 @@ public class App {
 			articleController.showDetail(cmd);
 		} 	else if (cmd.startsWith("article modify ")) {
 			articleController.doModify(cmd);
-		}	else if (cmd.equals("article list")) {
+		}	else if (cmd.startsWith("article list")) {
 			articleController.showList(cmd);
 		} else {
 			System.out.println("존재하지 않는 명령어 입니다.");

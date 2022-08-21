@@ -125,8 +125,26 @@ public class ArticleController extends Controller {
 	
 	public void showList(String cmd) {
 		System.out.println("== 게시물 리스트 ==");
-
-		List<Article> articles = articleService.getArticles();
+		
+		String[] cmdBits = cmd.split(" ");
+		
+		int page = 1;
+		String searchKeyword = "";
+		
+		if(cmdBits.length == 3) {
+			page = Integer.parseInt(cmdBits[2]);
+		}
+		
+		if(cmdBits.length >= 4) {
+			searchKeyword = cmdBits[3];
+		}
+		
+		int itemsInAPage = 10;
+		
+		// 임시데이터
+		itemsInAPage = 3;
+		
+		List<Article> articles = articleService.getForPrintArticles(page, itemsInAPage, searchKeyword);
 		
 		if (articles.size() == 0) {
 			System.out.println("게시물이 없습니다");
